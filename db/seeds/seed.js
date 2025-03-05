@@ -46,23 +46,27 @@ const seed = async ({topicData, userData, articleData, commentData}) => {
       CREATE TABLE articles (
         article_id SERIAL PRIMARY KEY,
         title VARCHAR(255) NOT NULL,
-        topic VARCHAR REFERENCES topics(slug) NOT NULL,
-        author VARCHAR REFERENCES users(username) NOT NULL,
         body TEXT,
-       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
         votes INTEGER DEFAULT 0,
-        article_img_url VARCHAR(1000)
+        article_img_url VARCHAR(1000),
+        topic VARCHAR NOT NULL,  -- Apply NOT NULL here
+        author VARCHAR NOT NULL,  -- Apply NOT NULL here
+        FOREIGN KEY (topic) REFERENCES topics(slug),
+        FOREIGN KEY (author) REFERENCES users(username)
       );
     `);
 
     await db.query(`
       CREATE TABLE comments (
         comment_id SERIAL PRIMARY KEY,
-        article_id INTEGER REFERENCES articles(article_id),
         body TEXT,
         votes INTEGER DEFAULT 0,
-        author VARCHAR REFERENCES users(username),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+        author VARCHAR NOT NULL,
+        article_id INTEGER NOT NULL,
+        FOREIGN KEY (author) REFERENCES users(username),
+        FOREIGN KEY (article_id) REFERENCES articles(article_id)
       );
     `);
     console.log("Tables created successfully");
@@ -87,7 +91,7 @@ const seed = async ({topicData, userData, articleData, commentData}) => {
       usersArray
     );
     const users = await db.query(insertUsersQuery);
-    console.log("Inserted Users:")
+    console.log("Inserted Users:");
 
     const articlesArray = formatArticles(articleData);
 
@@ -99,10 +103,8 @@ const seed = async ({topicData, userData, articleData, commentData}) => {
     );
 
     const articles = await db.query(insertArticlesQuery);
-    console.log("Inserted Articles:");
 
-
-    const commentsArray = formatComments(commentData);
+    const commentsArray = formatComments(commentData, articles.rows);
 
     const insertCommentsQuery = format(
       `INSERT INTO comments (author, article_id, votes, created_at, body)
@@ -112,9 +114,7 @@ const seed = async ({topicData, userData, articleData, commentData}) => {
     );
 
     const comments = await db.query(insertCommentsQuery);
-    console.log("Inserted Comments")
-
-
+    console.log("Inserted Comments");
   } catch (err) {
     console.error("Error creating tables:", err);
   }
@@ -142,19 +142,18 @@ function formatArticles(articleData) {
   });
 }
 
-function formatComments(commentData) {
+function formatComments(commentData, insertedArticlesData) {
+  const articleRef = insertedArticlesData.reduce((acc, article) => {
+    acc[article.title] = article.article_id;
+    return acc;
+  }, {});
+
   return commentData.map((comment) => {
-    const {author, article_id, votes, created_at, body} =
+    const {author, article_title, votes, created_at, body} =
       convertTimestampToDate(comment);
-    return [author, article_id, votes || 0, created_at, body];
+    return [author, articleRef[article_title], votes || 0, created_at, body];
   });
 }
 
-
-
 module.exports = seed;
-
-
-
-
 
