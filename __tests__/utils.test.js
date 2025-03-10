@@ -8,13 +8,13 @@ describe("convertTimestampToDate", () => {
     const input = { created_at: timestamp };
     const result = convertTimestampToDate(input);
     expect(result).not.toBe(input);
-    expect(result).toBeObject();
+    expect(result).toBeInstanceOf(Object);
   });
   test("converts a created_at property to a date", () => {
     const timestamp = 1557572706232;
     const input = { created_at: timestamp };
     const result = convertTimestampToDate(input);
-    expect(result.created_at).toBeDate();
+    expect(result.created_at).toBeInstanceOf(Date);
     expect(result.created_at).toEqual(new Date(timestamp));
   });
   test("does not mutate the input", () => {
@@ -37,4 +37,6 @@ describe("convertTimestampToDate", () => {
     expect(result).toEqual(expected);
   });
 });
+
+
 

@@ -93,6 +93,7 @@ describe("GET: /api/articles", () => {
       body: {articles},
     } = await request(app).get("/api/articles");
     expect(articles.length).not.toBe(0);
+    expect(articles).toBeSortedBy("created_at", {descending: true});
     articles.forEach((article) => {
       expect(article).toHaveProperty("article_id");
       expect(article).toHaveProperty("title");
@@ -104,18 +105,28 @@ describe("GET: /api/articles", () => {
       expect(article).toHaveProperty("comment_count");
     });
   });
+  test("Returns an array of all articles sorted by date in asc order", async () => {
+    const {
+      body: {articles},
+    } = await request(app).get("/api/articles?order=asc");
+    expect(articles.length).not.toBe(0);
+    expect(articles).toBeSortedBy("created_at", {ascending: true});
+  });
   describe("💥 Error handling tests", () => {
     test("Returns 400 when provided with wrong query sort_by values", async () => {
       const {
         body: {msg},
-      } = await request(app).get(`/api/articles/sort_by=invalid`).expect(400);
+      } = await request(app)
+        .get("/api/articles?sort_by=invalid_column")
+        .expect(400);
       expect(msg).toBe("Bad Request");
     });
-    test("Returns 400 when provided with wrong query sort_by values", async () => {
+
+    test("Returns 400 when provided with wrong query order values", async () => {
       const {
         body: {msg},
       } = await request(app)
-        .get(`/api/articles/sort_by=created_atorder="invalid"`)
+        .get("/api/articles?sort_by=created_at&order=invalid")
         .expect(400);
       expect(msg).toBe("Bad Request");
     });

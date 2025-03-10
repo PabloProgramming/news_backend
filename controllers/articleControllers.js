@@ -3,11 +3,15 @@ const {
   selectAllArticles,
 } = require("../models/articleModels");
 
-const getAllArticles = async (req, res) => {
-  const {sort_by, order} = req.query;
-  const articles = await selectAllArticles(sort_by, order);
-  res.status(200).send({articles});
-};
+const getAllArticles = async (req, res, next) => {
+  try {
+    const { sort_by, order } = req.query;
+    const articles = await selectAllArticles(sort_by, order);
+    res.status(200).send({ articles })
+  } catch (err) {
+    next(err)
+  }
+}
 
 const getArticleById = async (req, res, next) => {
   try {

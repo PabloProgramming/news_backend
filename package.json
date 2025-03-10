@@ -26,6 +26,7 @@
     "husky": "^8.0.2",
     "jest": "^27.5.1",
     "jest-extended": "^2.0.0",
+    "jest-sorted": "^1.0.15",
     "supertest": "^7.0.0"
   },
   "dependencies": {
@@ -36,7 +37,8 @@
   },
   "jest": {
     "setupFilesAfterEnv": [
-      "jest-extended/all"
+      "jest-sorted"
     ]
   }
 }
+
