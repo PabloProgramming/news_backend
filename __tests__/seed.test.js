@@ -518,7 +518,6 @@ describe('seed', () => {
           const foreignKeyRows = rows.filter((row) => {
             return row.constraint_type === "FOREIGN KEY";
           });
-          console.log(foreignKeyRows);
           expect(foreignKeyRows.length).toBe(2);
 
           foreignKeyRows.forEach((row) => {
