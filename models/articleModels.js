@@ -5,22 +5,6 @@ const allowedSortingQueries = ["created_at"];
 const allowedOrderQueries = ["desc", "asc"];
 
 const selectAllArticles = async (sort_by = "created_at", order = "desc") => {
-  let queryStr = `SELECT 
-  a.author,
-  a.title,
-  a.article_id,
-  a.topic,
-  a.created_at,
-  a.votes,
-  a.article_img_url,
-  COUNT(c.comment_id) AS comment_count
-FROM 
-  articles a
-LEFT JOIN 
-  comments c ON a.article_id = c.article_id
-GROUP BY 
-  a.article_id`;
-
   if (!allowedSortingQueries.includes(sort_by)) {
     return Promise.reject({
       status: 400,
@@ -34,6 +18,13 @@ GROUP BY
       msg: "Bad Request",
     });
   }
+
+  let queryStr = `SELECT a.author, a.title, a.article_id, a.topic, a.created_at,a.votes, a.article_img_url,
+  COUNT(c.comment_id) AS comment_count
+  FROM articles a
+  LEFT JOIN comments c ON a.article_id = c.article_id
+  GROUP BY 
+  a.article_id`;
 
   if (sort_by) {
     queryStr += ` ORDER BY ${sort_by}`;
