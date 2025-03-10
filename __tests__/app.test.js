@@ -84,3 +84,25 @@ describe("GET: /api/articles:article:id", () => {
   });
 });
 
+describe("GET: /api/articles", () => {
+  test("Returns a 200 OK status when articles are fetched successfully", async () => {
+    await request(app).get("/api/articles").expect(200);
+  });
+  test("Returns an array of all articles", async () => {
+    const {
+      body: {articles},
+    } = await request(app).get("/api/articles");
+    expect(articles.length).not.toBe(0);
+    articles.forEach((article) => {
+      expect(article).toHaveProperty("article_id");
+      expect(article).toHaveProperty("title");
+      expect(article).toHaveProperty("topic");
+      expect(article).toHaveProperty("created_at");
+      expect(article).toHaveProperty("votes");
+      expect(article).toHaveProperty("author");
+      expect(article).toHaveProperty("article_img_url");
+      expect(article).toHaveProperty("comment_count");
+    });
+  });
+});
+

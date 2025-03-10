@@ -1,7 +1,7 @@
 const express = require("express");
 const getApiEndpoints = require("./controllers/apiController");
 const getAllTopics = require("./controllers/topicControllers");
-const getArticleById = require("./controllers/articleControllers");
+const {getArticleById, getAllArticles} = require("./controllers/articleControllers");
 const {
   handleServerError,
   handleInvalidPath,
@@ -16,6 +16,8 @@ app.get("/api", getApiEndpoints);
 app.get("/api/topics", getAllTopics);
 
 app.get("/api/articles/:article_id", getArticleById);
+
+app.get("/api/articles", getAllArticles)
 
 app.use(handleCustomError);
 

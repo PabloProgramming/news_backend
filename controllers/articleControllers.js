@@ -1,4 +1,13 @@
-const selectArticleById = require("../models/articleModels");
+const {
+  selectArticleById,
+  selectAllArticles,
+} = require("../models/articleModels");
+
+const getAllArticles = async (req, res) => {
+  const {sort_by, order} = req.query;
+    const articles = await selectAllArticles(sort_by, order);
+    res.status(200).send({articles})
+};
 
 const getArticleById = async (req, res, next) => {
   try {
@@ -10,5 +19,5 @@ const getArticleById = async (req, res, next) => {
   }
 };
 
-module.exports = getArticleById;
+module.exports = {getArticleById, getAllArticles};
 
