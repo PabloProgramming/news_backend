@@ -48,6 +48,25 @@ describe("GET: /api/topics", () => {
   });
 });
 
+describe("GET: /api/articles:article:id", () => {
+  test("Returns a 200 OK status when an article is fetched successfully", async () => {
+    await request(app).get("/api/articles/2").expect(200);
+  });
 
-
+  test("Returns the article object when a valid id is provided", async () => {
+    const {
+      body: {article},
+    } = await request(app).get("/api/articles/2");
+    expect(article.article_id).toBe(2);
+    expect(article.title).toBe("Sony Vaio; or, The Laptop");
+    expect(article.topic).toBe("mitch");
+    expect(article.author).toBe("icellusedkars");
+    expect(article.body).toBe("Call me Mitchell. Some years ago..");
+    expect(article.votes).toBe(0);
+    expect(article.article_img_url).toBe(
+      "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+    );
+    expect(article.created_at).toEqual(expect.any(Number));
+  });
+});
 
