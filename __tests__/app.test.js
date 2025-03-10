@@ -75,10 +75,12 @@ describe("GET: /api/articles:article:id", () => {
       } = await request(app).get(`/api/articles/123123`).expect(404);
       expect(msg).toBe("Not Found");
     });
+    test("Returns 400 when the id is not a number", async () => {
+      const {
+        body: {msg},
+      } = await request(app).get(`/api/articles/badrequest`).expect(400);
+      expect(msg).toBe("Bad Request");
+    });
   });
 });
-
-
-
-
 

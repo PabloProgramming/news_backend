@@ -12,7 +12,7 @@ const selectArticleById = async (article_id) => {
       msg: "Not Found",
     });
   }
-    return article;
+  return article;
 };
 
 module.exports = selectArticleById;

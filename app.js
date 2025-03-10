@@ -6,6 +6,7 @@ const {
   handleServerError,
   handleInvalidPath,
   handleCustomError,
+  handlePsqlErrors,
 } = require("./controllers/errorControllers");
 
 const app = express();
@@ -17,6 +18,8 @@ app.get("/api/topics", getAllTopics);
 app.get("/api/articles/:article_id", getArticleById);
 
 app.use(handleCustomError);
+
+app.use(handlePsqlErrors);
 
 app.use(handleServerError);
 
