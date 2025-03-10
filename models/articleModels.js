@@ -1,6 +1,9 @@
 const db = require("../db/connection");
 const articles = require("../db/data/test-data/articles");
 
+const allowedSortingQueries = ["created_at"];
+const allowedOrderQueries = ["desc", "asc"];
+
 const selectAllArticles = async (sort_by = "created_at", order = "desc") => {
   let queryStr = `SELECT 
   a.author,
@@ -17,6 +20,20 @@ LEFT JOIN
   comments c ON a.article_id = c.article_id
 GROUP BY 
   a.article_id`;
+
+  if (!allowedSortingQueries.includes(sort_by)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request",
+    });
+  }
+
+  if (!allowedOrderQueries.includes(order)) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request",
+    });
+  }
 
   if (sort_by) {
     queryStr += ` ORDER BY ${sort_by}`;

@@ -88,7 +88,7 @@ describe("GET: /api/articles", () => {
   test("Returns a 200 OK status when articles are fetched successfully", async () => {
     await request(app).get("/api/articles").expect(200);
   });
-  test("Returns an array of all articles", async () => {
+  test("Returns an array of all articles sorted by date in desc order", async () => {
     const {
       body: {articles},
     } = await request(app).get("/api/articles");
@@ -102,6 +102,22 @@ describe("GET: /api/articles", () => {
       expect(article).toHaveProperty("author");
       expect(article).toHaveProperty("article_img_url");
       expect(article).toHaveProperty("comment_count");
+    });
+  });
+  describe("💥 Error handling tests", () => {
+    test("Returns 400 when provided with wrong query sort_by values", async () => {
+      const {
+        body: {msg},
+      } = await request(app).get(`/api/articles/sort_by=invalid`).expect(400);
+      expect(msg).toBe("Bad Request");
+    });
+    test("Returns 400 when provided with wrong query sort_by values", async () => {
+      const {
+        body: {msg},
+      } = await request(app)
+        .get(`/api/articles/sort_by=created_atorder="invalid"`)
+        .expect(400);
+      expect(msg).toBe("Bad Request");
     });
   });
 });

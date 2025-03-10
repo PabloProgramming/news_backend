@@ -5,8 +5,8 @@ const {
 
 const getAllArticles = async (req, res) => {
   const {sort_by, order} = req.query;
-    const articles = await selectAllArticles(sort_by, order);
-    res.status(200).send({articles})
+  const articles = await selectAllArticles(sort_by, order);
+  res.status(200).send({articles});
 };
 
 const getArticleById = async (req, res, next) => {
