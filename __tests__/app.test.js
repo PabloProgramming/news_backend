@@ -24,7 +24,7 @@ describe("GET: /api", () => {
   });
 });
 
-xdescribe("GET: /api/topics", () => {
+describe("GET: /api/topics", () => {
   test("Returns a 200 OK status when topics are fetched successfully", async () => {
     await request(app).get("/api/topics").expect(200);
   });
