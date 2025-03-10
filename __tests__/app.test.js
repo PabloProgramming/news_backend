@@ -84,3 +84,41 @@ describe("GET: /api/articles:article:id", () => {
   });
 });
 
+describe("GET: /api/articles", () => {
+  test("Returns a 200 OK status when articles are fetched successfully", async () => {
+    await request(app).get("/api/articles").expect(200);
+  });
+  test("Returns an array of all articles sorted by date in desc order", async () => {
+    const {
+      body: {articles},
+    } = await request(app).get("/api/articles");
+    expect(articles.length).not.toBe(0);
+    articles.forEach((article) => {
+      expect(article).toHaveProperty("article_id");
+      expect(article).toHaveProperty("title");
+      expect(article).toHaveProperty("topic");
+      expect(article).toHaveProperty("created_at");
+      expect(article).toHaveProperty("votes");
+      expect(article).toHaveProperty("author");
+      expect(article).toHaveProperty("article_img_url");
+      expect(article).toHaveProperty("comment_count");
+    });
+  });
+  describe("💥 Error handling tests", () => {
+    test("Returns 400 when provided with wrong query sort_by values", async () => {
+      const {
+        body: {msg},
+      } = await request(app).get(`/api/articles/sort_by=invalid`).expect(400);
+      expect(msg).toBe("Bad Request");
+    });
+    test("Returns 400 when provided with wrong query sort_by values", async () => {
+      const {
+        body: {msg},
+      } = await request(app)
+        .get(`/api/articles/sort_by=created_atorder="invalid"`)
+        .expect(400);
+      expect(msg).toBe("Bad Request");
+    });
+  });
+});
+
