@@ -69,7 +69,6 @@ const seed = async ({topicData, userData, articleData, commentData}) => {
         FOREIGN KEY (article_id) REFERENCES articles(article_id)
       );
     `);
-    console.log("Tables created successfully");
 
     // Format JSON object into a strig array to insert into table with db.query
     const topicsArray = formatTopics(topicData);
@@ -81,7 +80,6 @@ const seed = async ({topicData, userData, articleData, commentData}) => {
     );
 
     const topics = await db.query(insertTopicsQueries);
-    console.log("Inserted Topics:");
 
     const usersArray = formatUsers(userData);
     const insertUsersQuery = format(
@@ -91,12 +89,11 @@ const seed = async ({topicData, userData, articleData, commentData}) => {
       usersArray
     );
     const users = await db.query(insertUsersQuery);
-    console.log("Inserted Users:");
 
     const articlesArray = formatArticles(articleData);
 
     const insertArticlesQuery = format(
-      `INSERT INTO articles (title, body, votes, topic, author, created_at)
+      `INSERT INTO articles (title, body, votes, topic, author, created_at, article_img_url)
        VALUES %L
        RETURNING *;`,
       articlesArray
@@ -114,7 +111,6 @@ const seed = async ({topicData, userData, articleData, commentData}) => {
     );
 
     const comments = await db.query(insertCommentsQuery);
-    console.log("Inserted Comments");
   } catch (err) {
     console.error("Error creating tables:", err);
   }
@@ -136,9 +132,17 @@ function formatUsers(userData) {
 
 function formatArticles(articleData) {
   return articleData.map((article) => {
-    const {title, body, votes, topic, author, created_at} =
+    const {title, body, votes, topic, author, created_at, article_img_url} =
       convertTimestampToDate(article);
-    return [title, body, votes || 0, topic, author, created_at];
+    return [
+      title,
+      body,
+      votes || 0,
+      topic,
+      author,
+      created_at,
+      article_img_url,
+    ];
   });
 }
 

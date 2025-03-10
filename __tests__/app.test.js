@@ -66,7 +66,19 @@ describe("GET: /api/articles:article:id", () => {
     expect(article.article_img_url).toBe(
       "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
     );
-    expect(article.created_at).toEqual(expect.any(Number));
+    expect(article.created_at).toBe("2020-10-16T05:03:00.000Z");
+  });
+  describe("💥 Error handling tests", () => {
+    test("Returns 404 when the id is not found", async () => {
+      const {
+        body: {msg},
+      } = await request(app).get(`/api/articles/123123`).expect(404);
+      expect(msg).toBe("Not Found");
+    });
   });
 });
+
+
+
+
 
