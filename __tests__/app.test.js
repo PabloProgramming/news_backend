@@ -87,7 +87,7 @@ describe("ENDPOINT: /api/articles/article:id", () => {
         .expect(200);
     });
 
-    test("Returns the article object when a valid id is provided", async () => {
+    test("Returns the article object with votes updated when are positive", async () => {
       const {
         body: {updatedArticle},
       } = await request(app)
@@ -104,6 +104,44 @@ describe("ENDPOINT: /api/articles/article:id", () => {
         "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       );
       expect(updatedArticle.created_at).toBe("2020-10-16T05:03:00.000Z");
+    });
+    test("Returns the article object with votes updated when are negative", async () => {
+      const {
+        body: {updatedArticle},
+      } = await request(app)
+        .patch("/api/articles/1")
+        .send({inc_votes: -50})
+        .expect(200);
+      expect(updatedArticle.article_id).toBe(1);
+      expect(updatedArticle.title).toBe("Living in the shadow of a great man");
+      expect(updatedArticle.topic).toBe("mitch");
+      expect(updatedArticle.author).toBe("butter_bridge");
+      expect(updatedArticle.body).toBe("I find this existence challenging");
+      expect(updatedArticle.votes).toBe(50);
+      expect(updatedArticle.article_img_url).toBe(
+        "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      );
+      expect(updatedArticle.created_at).toBe("2020-07-09T20:11:00.000Z");
+    });
+    describe("💥 Error handling tests", () => {
+      test("Returns 404 when the id is not found", async () => {
+        const {
+          body: {msg},
+        } = await request(app).get(`/api/articles/123123`).expect(404);
+        expect(msg).toBe("Article not found");
+      });
+      test("Returns 400 when the id is not a number", async () => {
+        const {
+          body: {msg},
+        } = await request(app).get(`/api/articles/badrequest`).expect(400);
+        expect(msg).toBe("Bad Request");
+      });
+      test("Returns 400 if inc_votes is not provided", async () => {
+        const {
+          body: {msg},
+        } = await request(app).patch("/api/articles/2").send({}).expect(400);
+        expect(msg).toBe("Bad Request");
+      });
     });
   });
 });
@@ -279,11 +317,6 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
     });
   });
 });
-
-
-
-
-
 
 
 

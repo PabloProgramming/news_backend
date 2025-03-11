@@ -24,11 +24,15 @@ const getArticleById = async (req, res, next) => {
   }
 };
 
-const patchArticleById = async (req, res) => {
-  const {article_id} = req.params;
-  const {inc_votes} = req.body;
-  const updatedArticle = await updateArticleById(article_id, inc_votes);
-  res.status(200).send({updatedArticle});
+const patchArticleById = async (req, res, next) => {
+  try {
+    const {article_id} = req.params;
+    const {inc_votes} = req.body;
+    const updatedArticle = await updateArticleById(article_id, inc_votes);
+    res.status(200).send({updatedArticle});
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports = {getArticleById, getAllArticles, patchArticleById};
