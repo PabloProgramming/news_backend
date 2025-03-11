@@ -1,4 +1,6 @@
 const db = require("../db/connection");
+const {selectArticleById} = require("./articleModels");
+const { selectUserByUsername } = require("./userModels");
 
 const allowedSortingQueries = ["created_at"];
 const allowedOrderQueries = ["desc", "asc"];
@@ -48,12 +50,16 @@ const selectCommentsByArticleId = async (
 };
 
 const insertCommentByArticleId = async (article_id, username, body) => {
+  
+  await selectArticleById(article_id);
+
+  await selectUserByUsername(username)
+
   const queryStr = `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *`;
   const {rows} = await db.query(queryStr, [article_id, username, body]);
   const newComment = rows[0];
   return newComment;
 };
 
-module.exports = { selectCommentsByArticleId, insertCommentByArticleId };
-
+module.exports = {selectCommentsByArticleId, insertCommentByArticleId};
 

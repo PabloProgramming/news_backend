@@ -47,7 +47,7 @@ const selectArticleById = async (article_id) => {
   if (!article) {
     return Promise.reject({
       status: 404,
-      msg: "Not Found",
+      msg: "Article not found",
     });
   }
   return article;

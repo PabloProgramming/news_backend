@@ -19,12 +19,15 @@ const getCommentsByArticleId = async (req, res, next) => {
   }
 };
 
-const postCommentByArticleId = async (req, res) => {
-  const {article_id} = req.params;
-  const {username, body} = req.body;
-  const newComment = await insertCommentByArticleId(article_id, username, body);
-  console.log(newComment, "<<<<<")
-  res.status(201).send({newComment});
+const postCommentByArticleId = async (req, res, next) => {
+  try {
+    const { article_id } = req.params;
+    const { username, body } = req.body;
+    const newComment = await insertCommentByArticleId(article_id, username, body);
+    res.status(201).send({ newComment });
+  } catch (err) {
+    next(err)
+  }
 };
 
 module.exports = {getCommentsByArticleId, postCommentByArticleId};
