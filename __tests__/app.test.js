@@ -150,5 +150,17 @@ describe("GET: /api/articles:article:id/comments", () => {
       expect(comment.article_id).toBe(3);
     });
   });
+    test("Returns an array of comments by article_id sorted by date in asc order", async () => {
+      const {
+        body: {comments},
+      } = await request(app)
+        .get("/api/articles/3/comments?order=asc")
+          .expect(200);
+      expect(comments.length).not.toBe(0);
+      expect(comments).toBeSortedBy("created_at", {ascending: true});
+    });
 });
+
+
+
 

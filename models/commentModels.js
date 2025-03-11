@@ -8,7 +8,7 @@ const selectCommentsByArticleId = async (
   sort_by = "created_at",
   order = "desc"
 ) => {
-  let queryStr = `SELECT * FROM comments JOIN articles ON articles.article_id = $1`;
+  let queryStr = `SELECT * FROM comments WHERE article_id = $1`;
   let queryParams = [];
   if (article_id) {
     queryParams.push(article_id);
