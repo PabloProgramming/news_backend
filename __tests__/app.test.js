@@ -28,8 +28,8 @@ describe("GET: /api", () => {
 });
 
 describe("GET: /api/topics", () => {
-  test("Returns a 200 OK status when topics are fetched successfully", () => {
-    request(app).get("/api/topics").expect(200);
+  test("Returns a 200 OK status when topics are fetched successfully", async () => {
+    await request(app).get("/api/topics").expect(200);
   });
   test("Returns an array of all topics", async () => {
     const {
@@ -45,8 +45,8 @@ describe("GET: /api/topics", () => {
 });
 
 describe("GET: /api/articles:article:id", () => {
-  test("Returns a 200 OK status when an article is fetched successfully", () => {
-    request(app).get("/api/articles/2").expect(200);
+  test("Returns a 200 OK status when an article is fetched successfully", async () => {
+    await request(app).get("/api/articles/2").expect(200);
   });
 
   test("Returns the article object when a valid id is provided", async () => {
@@ -81,8 +81,8 @@ describe("GET: /api/articles:article:id", () => {
 });
 
 describe("GET: /api/articles", () => {
-  test("Returns a 200 OK status when articles are fetched successfully", () => {
-    request(app).get("/api/articles").expect(200);
+  test("Returns a 200 OK status when articles are fetched successfully", async () => {
+    await request(app).get("/api/articles").expect(200);
   });
   test("Returns an array of all articles sorted by date in desc order", async () => {
     const {
@@ -130,8 +130,8 @@ describe("GET: /api/articles", () => {
 });
 
 describe("GET: /api/articles:article:id/comments", () => {
-  test("Returns a 200 OK status when an comments are fetched successfully", () => {
-    request(app).get("/api/articles/2/comments").expect(200);
+  test("Returns a 200 OK status when an comments are fetched successfully", async () => {
+    await request(app).get("/api/articles/2/comments").expect(200);
   });
 
   test("Returns an array of comments when a valid article_id is provided", async () => {
