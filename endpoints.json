@@ -6,7 +6,7 @@
     "description": "serves an array of all topics",
     "queries": [],
     "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
+      "topics": [{"slug": "football", "description": "Footie!"}]
     }
   },
   "GET /api/articles": {
@@ -42,5 +42,32 @@
         "created_at": "2020-10-16T05:03:00.000Z"
       }
     }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "serves an array of comments for the given article_id",
+    "params": ["article_id"],
+    "queries": ["sort_by", "order"],
+    "exampleResponse": {
+      "comments": [
+        {
+          "comment_id": 11,
+          "votes": 0,
+          "created_at": "2020-09-20T00:10:00.000Z",
+          "author": "icellusedkars",
+          "body": "Ambidextrous marsupial",
+          "article_id": 3
+        },
+        {
+          "comment_id": 10,
+          "votes": 0,
+          "created_at": "2020-06-20T08:24:00.000Z",
+          "author": "icellusedkars",
+          "body": "git push origin master",
+          "article_id": 3
+        }
+      ]
+    }
   }
 }
+
+

@@ -5,13 +5,9 @@ const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data");
 
-beforeEach(() => {
-  return seed(testData);
-});
+beforeEach(() => seed(testData));
 
-afterAll(() => {
-  return db.end();
-});
+afterAll(() => db.end());
 
 describe("💥 ANY:/notAPath", () => {
   test("404: Returns Not Found for a non-existing path", async () => {
@@ -38,7 +34,7 @@ describe("GET: /api/topics", () => {
   test("Returns an array of all topics", async () => {
     const {
       body: {topics},
-    } = await request(app).get("/api/topics");
+    } = await request(app).get("/api/topics").expect(200);
     expect(topics.length).not.toBe(0);
     topics.forEach((topic) => {
       expect(topic).toHaveProperty("slug");
@@ -56,7 +52,7 @@ describe("GET: /api/articles:article:id", () => {
   test("Returns the article object when a valid id is provided", async () => {
     const {
       body: {article},
-    } = await request(app).get("/api/articles/2");
+    } = await request(app).get("/api/articles/2").expect(200);
     expect(article.article_id).toBe(2);
     expect(article.title).toBe("Sony Vaio; or, The Laptop");
     expect(article.topic).toBe("mitch");
@@ -91,7 +87,7 @@ describe("GET: /api/articles", () => {
   test("Returns an array of all articles sorted by date in desc order", async () => {
     const {
       body: {articles},
-    } = await request(app).get("/api/articles");
+    } = await request(app).get("/api/articles").expect(200);
     expect(articles.length).not.toBe(0);
     expect(articles).toBeSortedBy("created_at", {descending: true});
     articles.forEach((article) => {
@@ -108,7 +104,7 @@ describe("GET: /api/articles", () => {
   test("Returns an array of all articles sorted by date in asc order", async () => {
     const {
       body: {articles},
-    } = await request(app).get("/api/articles?order=asc");
+    } = await request(app).get("/api/articles?order=asc").expect(200);
     expect(articles.length).not.toBe(0);
     expect(articles).toBeSortedBy("created_at", {ascending: true});
   });
@@ -129,6 +125,76 @@ describe("GET: /api/articles", () => {
         .get("/api/articles?sort_by=created_at&order=invalid")
         .expect(400);
       expect(msg).toBe("Bad Request");
+    });
+  });
+});
+
+describe("GET: /api/articles:article:id/comments", () => {
+  test("Returns a 200 OK status when an comments are fetched successfully", async () => {
+    await request(app).get("/api/articles/3/comments").expect(200);
+  });
+
+  test("Returns an array of comments when a valid article_id is provided", async () => {
+    const {
+      body: {comments},
+    } = await request(app).get("/api/articles/3/comments");
+    expect(comments.length).not.toBe(0);
+    expect(comments).toBeSortedBy("created_at", {descending: true});
+    comments.forEach((comment) => {
+      expect(comment).toHaveProperty("comment_id");
+      expect(comment).toHaveProperty("votes");
+      expect(comment).toHaveProperty("created_at");
+      expect(comment).toHaveProperty("author");
+      expect(comment).toHaveProperty("body");
+      expect(comment).toHaveProperty("article_id");
+      expect(comment.article_id).toBe(3);
+    });
+  });
+  test("Returns an array of comments by article_id sorted by date in asc order", async () => {
+    const {
+      body: {comments},
+    } = await request(app)
+      .get("/api/articles/3/comments?order=asc")
+      .expect(200);
+    expect(comments.length).not.toBe(0);
+    expect(comments).toBeSortedBy("created_at", {ascending: true});
+  });
+  describe("💥 Error handling tests", () => {
+    test("Returns 404 when the article_id is not found", async () => {
+      const {
+        body: {msg},
+      } = await request(app).get(`/api/articles/123123/comments`).expect(404);
+      expect(msg).toBe("Not Found");
+    });
+    test("Returns 400 when the article_id is not a number", async () => {
+      const {
+        body: {msg},
+      } = await request(app)
+        .get(`/api/articles/badrequest/comments`)
+        .expect(400);
+      expect(msg).toBe("Bad Request");
+    });
+    test("Returns 400 when provided with wrong query sort_by values", async () => {
+      const {
+        body: {msg},
+      } = await request(app)
+        .get("/api/articles/3/comments?sort_by=invalid_column")
+        .expect(400);
+      expect(msg).toBe("Bad Request");
+    });
+    test("Returns 400 when provided with wrong query order values", async () => {
+      const {
+        body: {msg},
+      } = await request(app)
+        .get("/api/articles/3/comments?sort_by=created_at&order=invalid")
+        .expect(400);
+      expect(msg).toBe("Bad Request");
+    });
+    test("Returns 404 when there are not comments associated with provided article_id", async () => {
+      const {
+        body: {msg},
+      } = await request(app).get("/api/articles/2/comments").expect(404);
+      expect(msg).toBe("Not Found");
     });
   });
 });
