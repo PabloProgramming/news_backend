@@ -1,5 +1,4 @@
 const handleCustomError = (err, req, res, next) => {
- console.log(err.msg)
   if (err.status && err.msg) {
      res.status(err.status).send({msg: err.msg});
   }

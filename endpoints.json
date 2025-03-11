@@ -67,7 +67,21 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "adds a comment to the specified article_id",
+    "params": ["article_id"],
+    "body": {
+      "username": "string",
+      "body": "string"
+    },
+    "exampleResponse": {
+      "comment_id": 19,
+      "body": "Great article!",
+      "votes": 0,
+      "created_at": "2025-03-11T14:57:34.661Z",
+      "author": "rogersop",
+      "article_id": 2
+    }
   }
 }
-
-
