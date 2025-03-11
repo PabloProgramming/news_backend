@@ -58,8 +58,8 @@ const updateArticleById = async (article_id, inc_votes) => {
   if (!inc_votes) {
     return Promise.reject({
       status: 400,
-      msg: "Bad Request"
-    })
+      msg: "Bad Request",
+    });
   }
   let queryStr = `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`;
   const {rows} = await db.query(queryStr, [inc_votes, article_id]);

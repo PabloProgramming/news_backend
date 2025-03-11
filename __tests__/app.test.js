@@ -205,7 +205,7 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
       const {
         body: {comments},
       } = await request(app).get("/api/articles/3/comments");
-      expect(comments.length).not.toBe(0);
+      expect(comments.length).toBe(2);
       expect(comments).toBeSortedBy("created_at", {descending: true});
       comments.forEach((comment) => {
         expect(comment).toHaveProperty("comment_id");
@@ -223,7 +223,7 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
       } = await request(app)
         .get("/api/articles/3/comments?order=asc")
         .expect(200);
-      expect(comments.length).not.toBe(0);
+      expect(comments.length).toBe(2);
       expect(comments).toBeSortedBy("created_at", {ascending: true});
     });
     describe("💥 Error handling tests", () => {
@@ -268,9 +268,9 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
 
   describe("POST: /api/articles/:article_id/comments", () => {
     test("Returns a 201 status when comment is created successfully", async () => {
-      const testComment = {username: "rogersop", body: "Great article!"};
+      const testComment = {username: "lurker", body: "Bad article!"};
       await request(app)
-        .post("/api/articles/2/comments")
+        .post("/api/articles/3/comments")
         .send(testComment)
         .expect(201);
     });
@@ -317,8 +317,4 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
     });
   });
 });
-
-
-
-
 
