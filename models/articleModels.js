@@ -53,5 +53,19 @@ const selectArticleById = async (article_id) => {
   return article;
 };
 
-module.exports = {selectArticleById, selectAllArticles};
+const updateArticleById = async (article_id, inc_votes) => {
+  await selectArticleById(article_id);
+  if (!inc_votes) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request"
+    })
+  }
+  let queryStr = `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`;
+  const {rows} = await db.query(queryStr, [inc_votes, article_id]);
+  const updatedArticle = rows[0];
+  return updatedArticle;
+};
+
+module.exports = {selectArticleById, selectAllArticles, updateArticleById};
 
