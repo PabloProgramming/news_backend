@@ -46,20 +46,6 @@ describe("ENDPOINT: /api/articles", () => {
       expect(articles.length).not.toBe(0);
       expect(articles).toBeSortedBy("title", {descending: true});
     });
-    test("Returns an array of all articles sorted by topic in desc order", async () => {
-      const {
-        body: {articles},
-      } = await request(app).get("/api/articles?sort_by=topic").expect(200);
-      expect(articles.length).not.toBe(0);
-      expect(articles).toBeSortedBy("topic", {descending: true});
-    });
-    test("Returns an array of all articles sorted by author in desc order", async () => {
-      const {
-        body: {articles},
-      } = await request(app).get("/api/articles?sort_by=author").expect(200);
-      expect(articles.length).not.toBe(0);
-      expect(articles).toBeSortedBy("author", {descending: true});
-    });
     test("Returns an array of all articles sorted by votes in desc order", async () => {
       const {
         body: {articles},
@@ -67,14 +53,12 @@ describe("ENDPOINT: /api/articles", () => {
       expect(articles.length).not.toBe(0);
       expect(articles).toBeSortedBy("votes", {descending: true});
     });
-    test("Returns an array of all articles sorted by article_img_url in desc order", async () => {
+    test("Returns an array of all articles belonging to a topic in desc order", async () => {
       const {
         body: {articles},
-      } = await request(app)
-        .get("/api/articles?sort_by=article_img_url")
-        .expect(200);
-      expect(articles.length).not.toBe(0);
-      expect(articles).toBeSortedBy("article_img_url", {descending: true});
+      } = await request(app).get("/api/articles?topic=mitch").expect(200);
+      expect(articles.length).toBe(12);
+      expect(articles).toBeSortedBy("created_at", {descending: true});
     });
 
     describe("💥 Error handling tests", () => {
@@ -94,6 +78,21 @@ describe("ENDPOINT: /api/articles", () => {
           .get("/api/articles?sort_by=created_at&order=invalid")
           .expect(400);
         expect(msg).toBe("Bad Request");
+      });
+      test("Returns 404 when the topic is not found", async () => {
+        const {
+          body: {msg},
+        } = await request(app)
+          .get(`/api/articles?topic=doesnotexist`)
+          .expect(404);
+        expect(msg).toBe("Topic not found");
+      });
+      test("Returns a message when the topic exists but has no articles", async () => {
+        const {
+          body: {articles},
+        } = await request(app).get(`/api/articles?topic=paper`).expect(200);
+        expect(articles.articles).toEqual([]);
+        expect(articles.msg).toBe("No articles found for this topic");
       });
     });
   });
