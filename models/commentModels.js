@@ -1,6 +1,6 @@
 const db = require("../db/connection");
 const {selectArticleById} = require("./articleModels");
-const { selectUserByUsername } = require("./userModels");
+const {selectUserByUsername} = require("./userModels");
 
 const allowedSortingQueries = ["created_at"];
 const allowedOrderQueries = ["desc", "asc"];
@@ -50,10 +50,9 @@ const selectCommentsByArticleId = async (
 };
 
 const insertCommentByArticleId = async (article_id, username, body) => {
-  
   await selectArticleById(article_id);
 
-  await selectUserByUsername(username)
+  await selectUserByUsername(username);
 
   const queryStr = `INSERT INTO comments (article_id, author, body) VALUES ($1, $2, $3) RETURNING *`;
   const {rows} = await db.query(queryStr, [article_id, username, body]);
@@ -61,5 +60,15 @@ const insertCommentByArticleId = async (article_id, username, body) => {
   return newComment;
 };
 
-module.exports = {selectCommentsByArticleId, insertCommentByArticleId};
+const removeCommentById = async (comment_id) => {
+  const queryStr = `DELETE FROM comments WHERE comment_id = $1`;
+  await db.query(queryStr, [comment_id]);
+  //Not necesary to return anything
+};
+
+module.exports = {
+  selectCommentsByArticleId,
+  insertCommentByArticleId,
+  removeCommentById,
+};
 

@@ -1,6 +1,7 @@
 const {
   selectCommentsByArticleId,
   insertCommentByArticleId,
+  removeCommentById,
 } = require("../models/commentModels");
 
 const getCommentsByArticleId = async (req, res, next) => {
@@ -33,5 +34,15 @@ const postCommentByArticleId = async (req, res, next) => {
   }
 };
 
-module.exports = {getCommentsByArticleId, postCommentByArticleId};
+const deleteCommentById = async (req, res) => {
+  const {comment_id} = req.params;
+  const deletedComment = await removeCommentById(comment_id);
+  res.status(204).send();
+};
+
+module.exports = {
+  getCommentsByArticleId,
+  postCommentByArticleId,
+  deleteCommentById,
+};
 

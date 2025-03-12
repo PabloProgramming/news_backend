@@ -125,3 +125,19 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
   });
 });
 
+describe("ENDPOINT: /api/comments/:comment_id", () => {
+  describe("DELETE: /api/articles:article:id/comments", () => {
+    test("Responds with 204 status when a comment is deleted successfully", async () => {
+      await request(app).delete("/api/comments/5").expect(204);
+    });
+    test("Successfully deletes a comment and updates the comments list for the article", async () => {
+      const {body} = await request(app).delete("/api/comments/10").expect(204);
+      expect(body).toEqual({});
+      const {
+        body: {comments},
+      } = await request(app).get("/api/articles/3/comments");
+      expect(comments.length).toBe(1);
+    });
+  });
+});
+
