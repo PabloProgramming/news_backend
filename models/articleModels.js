@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const {selectTopicBySlug} = require("./topicModels");
 
 const allowedSortingQueries = [
   "article_id",
@@ -37,6 +38,7 @@ const selectAllArticles = async (
   let queryValues = [];
 
   if (topic) {
+    await selectTopicBySlug(topic);
     queryStr += ` WHERE a.topic = $1`;
     queryValues.push(topic);
   }
@@ -53,6 +55,9 @@ const selectAllArticles = async (
 
   const {rows} = await db.query(queryStr, queryValues);
   const articles = rows;
+  if (articles.length === 0) {
+    return {articles: [], msg: "No articles found for this topic"};
+  }
   return articles;
 };
 

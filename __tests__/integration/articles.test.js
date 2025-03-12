@@ -79,6 +79,21 @@ describe("ENDPOINT: /api/articles", () => {
           .expect(400);
         expect(msg).toBe("Bad Request");
       });
+      test("Returns 404 when the topic is not found", async () => {
+        const {
+          body: {msg},
+        } = await request(app)
+          .get(`/api/articles?topic=doesnotexist`)
+          .expect(404);
+        expect(msg).toBe("Topic not found");
+      });
+      test("Returns a message when the topic exists but has no articles", async () => {
+        const {
+          body: {articles},
+        } = await request(app).get(`/api/articles?topic=paper`).expect(200);
+        expect(articles.articles).toEqual([]);
+        expect(articles.msg).toBe("No articles found for this topic");
+      });
     });
   });
 });
