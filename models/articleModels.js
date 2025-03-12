@@ -31,7 +31,7 @@ const selectAllArticles = async (
   }
 
   let queryStr = `SELECT a.author, a.title, a.article_id, a.topic, a.created_at,a.votes, a.article_img_url,
-  COUNT(c.comment_id) AS comment_count
+  CAST(COUNT(c.comment_id) AS integer) AS comment_count
   FROM articles a
   LEFT JOIN comments c ON a.article_id = c.article_id`;
 
@@ -63,9 +63,15 @@ const selectAllArticles = async (
 
 const selectArticleById = async (article_id) => {
   const {rows} = await db.query(
-    `SELECT * FROM articles WHERE article_id = $1`,
+    `SELECT a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, a.article_img_url, a.body,
+    CAST(COUNT(c.comment_id) AS integer) AS comment_count
+     FROM articles a
+     LEFT JOIN comments c ON a.article_id = c.article_id
+     WHERE a.article_id = $1
+     GROUP BY a.article_id`,
     [article_id]
   );
+
   const article = rows[0];
   if (!article) {
     return Promise.reject({
@@ -73,6 +79,7 @@ const selectArticleById = async (article_id) => {
       msg: "Article not found",
     });
   }
+
   return article;
 };
 
