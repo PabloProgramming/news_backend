@@ -138,6 +138,20 @@ describe("ENDPOINT: /api/comments/:comment_id", () => {
       } = await request(app).get("/api/articles/3/comments");
       expect(comments.length).toBe(1);
     });
+    describe("💥 Error handling tests", () => {
+      test("Responds with 404 when the comment_id is not found", async () => {
+        const {
+          body: {msg},
+        } = await request(app).delete(`/api/comments/999999`).expect(404);
+        expect(msg).toBe("Comment not found");
+      });
+      test("Returns 400 when the comment_id is not a number", async () => {
+        const {
+          body: {msg},
+        } = await request(app).delete(`/api/comments/invalidId`).expect(400);
+        expect(msg).toBe("Bad Request");
+      });
+    });
   });
 });
 

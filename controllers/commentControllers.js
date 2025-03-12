@@ -34,10 +34,14 @@ const postCommentByArticleId = async (req, res, next) => {
   }
 };
 
-const deleteCommentById = async (req, res) => {
-  const {comment_id} = req.params;
-  const deletedComment = await removeCommentById(comment_id);
-  res.status(204).send();
+const deleteCommentById = async (req, res, next) => {
+  try {
+    const {comment_id} = req.params;
+    const deletedComment = await removeCommentById(comment_id);
+    res.status(204).send();
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports = {

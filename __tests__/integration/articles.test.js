@@ -136,13 +136,13 @@ describe("ENDPOINT: /api/articles/article:id", () => {
       test("Returns 404 when the id is not found", async () => {
         const {
           body: {msg},
-        } = await request(app).get(`/api/articles/123123`).expect(404);
+        } = await request(app).patch(`/api/articles/123123`).expect(404);
         expect(msg).toBe("Article not found");
       });
       test("Returns 400 when the id is not a number", async () => {
         const {
           body: {msg},
-        } = await request(app).get(`/api/articles/badrequest`).expect(400);
+        } = await request(app).patch(`/api/articles/badrequest`).expect(400);
         expect(msg).toBe("Bad Request");
       });
       test("Returns 400 if inc_votes is not provided", async () => {
