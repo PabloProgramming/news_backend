@@ -7,11 +7,14 @@ const allowedSortingQueries = [
   "topic",
   "author",
   "votes",
-  "article_img_url",
 ];
 const allowedOrderQueries = ["desc", "asc"];
 
-const selectAllArticles = async (sort_by = "created_at", order = "desc") => {
+const selectAllArticles = async (
+  sort_by = "created_at",
+  order = "desc",
+  topic
+) => {
   if (!allowedSortingQueries.includes(sort_by)) {
     return Promise.reject({
       status: 400,
@@ -29,8 +32,16 @@ const selectAllArticles = async (sort_by = "created_at", order = "desc") => {
   let queryStr = `SELECT a.author, a.title, a.article_id, a.topic, a.created_at,a.votes, a.article_img_url,
   COUNT(c.comment_id) AS comment_count
   FROM articles a
-  LEFT JOIN comments c ON a.article_id = c.article_id
-  GROUP BY 
+  LEFT JOIN comments c ON a.article_id = c.article_id`;
+
+  let queryValues = [];
+
+  if (topic) {
+    queryStr += ` WHERE a.topic = $1`;
+    queryValues.push(topic);
+  }
+
+  queryStr += ` GROUP BY 
   a.article_id`;
 
   if (sort_by) {
@@ -40,7 +51,7 @@ const selectAllArticles = async (sort_by = "created_at", order = "desc") => {
     queryStr += ` ${order}`;
   }
 
-  const {rows} = await db.query(queryStr);
+  const {rows} = await db.query(queryStr, queryValues);
   const articles = rows;
   return articles;
 };
