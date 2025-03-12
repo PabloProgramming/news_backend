@@ -1,7 +1,14 @@
 const db = require("../db/connection");
-const articles = require("../db/data/test-data/articles");
 
-const allowedSortingQueries = ["created_at"];
+const allowedSortingQueries = [
+  "article_id",
+  "created_at",
+  "title",
+  "topic",
+  "author",
+  "votes",
+  "article_img_url",
+];
 const allowedOrderQueries = ["desc", "asc"];
 
 const selectAllArticles = async (sort_by = "created_at", order = "desc") => {

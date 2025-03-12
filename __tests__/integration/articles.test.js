@@ -30,6 +30,53 @@ describe("ENDPOINT: /api/articles", () => {
       expect(articles.length).not.toBe(0);
       expect(articles).toBeSortedBy("created_at", {ascending: true});
     });
+    test("Returns an array of all articles sorted by article_id in asc order", async () => {
+      const {
+        body: {articles},
+      } = await request(app)
+        .get("/api/articles?sort_by=article_id&order=asc")
+        .expect(200);
+      expect(articles.length).not.toBe(0);
+      expect(articles).toBeSortedBy("article_id", {ascending: true});
+    });
+    test("Returns an array of all articles sorted by title in desc order", async () => {
+      const {
+        body: {articles},
+      } = await request(app).get("/api/articles?sort_by=title").expect(200);
+      expect(articles.length).not.toBe(0);
+      expect(articles).toBeSortedBy("title", {descending: true});
+    });
+    test("Returns an array of all articles sorted by topic in desc order", async () => {
+      const {
+        body: {articles},
+      } = await request(app).get("/api/articles?sort_by=topic").expect(200);
+      expect(articles.length).not.toBe(0);
+      expect(articles).toBeSortedBy("topic", {descending: true});
+    });
+    test("Returns an array of all articles sorted by author in desc order", async () => {
+      const {
+        body: {articles},
+      } = await request(app).get("/api/articles?sort_by=author").expect(200);
+      expect(articles.length).not.toBe(0);
+      expect(articles).toBeSortedBy("author", {descending: true});
+    });
+    test("Returns an array of all articles sorted by votes in desc order", async () => {
+      const {
+        body: {articles},
+      } = await request(app).get("/api/articles?sort_by=votes").expect(200);
+      expect(articles.length).not.toBe(0);
+      expect(articles).toBeSortedBy("votes", {descending: true});
+    });
+    test("Returns an array of all articles sorted by article_img_url in desc order", async () => {
+      const {
+        body: {articles},
+      } = await request(app)
+        .get("/api/articles?sort_by=article_img_url")
+        .expect(200);
+      expect(articles.length).not.toBe(0);
+      expect(articles).toBeSortedBy("article_img_url", {descending: true});
+    });
+
     describe("💥 Error handling tests", () => {
       test("Returns 400 when provided with wrong query sort_by values", async () => {
         const {
