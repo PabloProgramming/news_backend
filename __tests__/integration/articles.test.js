@@ -101,23 +101,24 @@ describe("ENDPOINT: /api/articles", () => {
 describe("ENDPOINT: /api/articles/article:id", () => {
   describe("GET: /api/articles/article:id", () => {
     test("Returns a 200 OK status when an article is fetched successfully", async () => {
-      await request(app).get("/api/articles/2").expect(200);
+      await request(app).get("/api/articles/5").expect(200);
     });
 
-    test("Returns the article object when a valid id is provided", async () => {
+    test("Returns the article object with comment_count when a valid article_id is provided", async () => {
       const {
         body: {article},
-      } = await request(app).get("/api/articles/2").expect(200);
-      expect(article.article_id).toBe(2);
-      expect(article.title).toBe("Sony Vaio; or, The Laptop");
+      } = await request(app).get("/api/articles/1").expect(200);
+      expect(article.article_id).toBe(1);
+      expect(article.title).toBe("Living in the shadow of a great man");
       expect(article.topic).toBe("mitch");
-      expect(article.author).toBe("icellusedkars");
-      expect(article.body).toBe("Call me Mitchell. Some years ago..");
-      expect(article.votes).toBe(0);
+      expect(article.author).toBe("butter_bridge");
+      expect(article.body).toBe("I find this existence challenging");
+      expect(article.votes).toBe(100);
       expect(article.article_img_url).toBe(
         "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       );
-      expect(article.created_at).toBe("2020-10-16T05:03:00.000Z");
+      expect(article.created_at).toBe("2020-07-09T20:11:00.000Z");
+      expect(article.comment_count).toBe(11);
     });
     describe("💥 Error handling tests", () => {
       test("Returns 404 when the id is not found", async () => {
