@@ -1,5 +1,12 @@
 const db = require("../db/connection");
 
+const selectAllUsers = async () => {
+  let queryStr = `SELECT * FROM users`
+  const { rows } = await db.query(queryStr)
+  const users = rows
+  return users;
+}
+
 const selectUserByUsername = async (username) => {
   const {rows} = await db.query("SELECT * FROM users WHERE username = $1", [
     username,
@@ -14,4 +21,5 @@ const selectUserByUsername = async (username) => {
   return user;
 };
 
-module.exports = {selectUserByUsername};
+module.exports = {selectUserByUsername, selectAllUsers};
+

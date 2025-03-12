@@ -17,6 +17,8 @@ const {
   postCommentByArticleId,
 } = require("./controllers/commentControllers");
 
+const {getAllUsers} = require("./controllers/userControllers")
+
 const app = express();
 
 app.use(express.json());
@@ -24,6 +26,8 @@ app.use(express.json());
 app.get("/api", getApiEndpoints);
 
 app.get("/api/topics", getAllTopics);
+
+app.get("/api/users", getAllUsers)
 
 app.get("/api/articles/:article_id", getArticleById);
 app.patch("/api/articles/:article_id", patchArticleById);
