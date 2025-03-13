@@ -152,16 +152,45 @@ describe("ENDPOINT: /api/comments/:comment_id", () => {
       });
     });
   });
+  describe("PATCH: /api/comments/:comment_id", () => {
+    test("Responds with 200 status when the comment is updated successfully", async () => {
+      await request(app).patch("/api/comments/7").send({inc_votes: 3}).expect(200);
+    });
+    test("Returns the comment object with votes updated properly when a valid id is provided", async () => {
+      const {
+        body: {comment},
+      } = await request(app).get("/api/comments/1").expect(200);
+      expect(comment.votes).toBe(16);
+      const {
+        body: {updatedComment},
+      } = await request(app)
+        .patch("/api/comments/1")
+        .send({inc_votes: 1})
+        .expect(200);
+      expect(updatedComment.votes).toBe(17);
+    });
+  });
+   describe("💥 Error handling tests", () => {
+     test("Responds with 404 when the id is not found", async () => {
+       const {
+         body: {msg},
+       } = await request(app).patch(`/api/comments/123123`).expect(404);
+       expect(msg).toBe("Comment not found");
+     });
+     test("Responds with 400 when the id is not a number", async () => {
+       const {
+         body: {msg},
+       } = await request(app).patch(`/api/comments/badrequest`).expect(400);
+       expect(msg).toBe("Bad Request");
+     });
+     test("Responds with 400 if inc_votes is not provided", async () => {
+       const {
+         body: {msg},
+       } = await request(app).patch("/api/comments/2").send({}).expect(400);
+       expect(msg).toBe("Bad Request");
+     });
+   });
 });
-
-
-
-
-
-
-
-
-
 
 
 

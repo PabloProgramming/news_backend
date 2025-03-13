@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const seed = require("../db/seeds/seed");
 const {selectArticleById} = require("./articleModels");
 const {selectUserByUsername} = require("./userModels");
 
@@ -60,7 +61,7 @@ const insertCommentByArticleId = async (article_id, username, body) => {
   return newComment;
 };
 
-const removeCommentById = async (comment_id) => {
+const selectCommentById = async (comment_id) => {
   const {rows} = await db.query(
     `SELECT * FROM comments WHERE comment_id = $1`,
     [comment_id]
@@ -72,14 +73,37 @@ const removeCommentById = async (comment_id) => {
       msg: "Comment not found",
     });
   }
+  return comment;
+};
+
+const removeCommentById = async (comment_id) => {
+  await selectCommentById(comment_id);
+
   const queryStr = `DELETE FROM comments WHERE comment_id = $1`;
   await db.query(queryStr, [comment_id]);
   //Not necesary to return anything
+};
+
+const updateCommentVotesById = async (comment_id, inc_votes) => {
+  await selectCommentById(comment_id);
+  if (!inc_votes) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request",
+    });
+  }
+  const queryStr = `UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *`;
+  const {rows} = await db.query(queryStr, [inc_votes, comment_id]);
+  return rows[0];
 };
 
 module.exports = {
   selectCommentsByArticleId,
   insertCommentByArticleId,
   removeCommentById,
+  updateCommentVotesById,
+  selectCommentById,
 };
+
+
 
