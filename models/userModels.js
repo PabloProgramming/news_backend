@@ -1,7 +1,7 @@
 const db = require("../db/connection");
 
 const selectAllUsers = async () => {
-  let queryStr = `SELECT * FROM users`
+  const queryStr = `SELECT * FROM users`
   const { rows } = await db.query(queryStr)
   const users = rows
   return users;

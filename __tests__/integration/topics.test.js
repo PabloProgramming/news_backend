@@ -3,7 +3,7 @@ const request = require("supertest");
 const app = require("../../app");
 
 describe("GET: /api/topics", () => {
-  test("Returns a 200 OK status when topics are fetched successfully", async () => {
+  test("Responds with a 200 OK status when topics are fetched successfully", async () => {
     await request(app).get("/api/topics").expect(200);
   });
   test("Returns an array of all topics", async () => {
@@ -18,4 +18,5 @@ describe("GET: /api/topics", () => {
     });
   });
 });
+
 
