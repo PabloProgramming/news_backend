@@ -54,7 +54,6 @@
   },
   "GET /api/articles/:article_id": {
     "description": "serves a single article object based on the provided article_id",
-    "params": ["article_id"],
     "queries": [],
     "exampleResponse": {
       "article": {
@@ -72,7 +71,6 @@
   },
   "GET /api/articles/:article_id/comments": {
     "description": "serves an array of comments for the given article_id",
-    "params": ["article_id"],
     "queries": ["sort_by", "order"],
     "exampleResponse": {
       "comments": [
@@ -97,7 +95,6 @@
   },
   "POST /api/articles/:article_id/comments": {
     "description": "adds a comment to the specified article_id",
-    "params": ["article_id"],
     "body": {
       "username": "string",
       "body": "string"
@@ -113,9 +110,8 @@
   },
   "PATCH /api/articles/:article_id": {
     "description": "updates the votes for an article by its article_id",
-    "params": ["article_id"],
     "body": {
-      "inc_votes": "number"
+      "inc_votes": 3
     },
     "exampleResponse": {
       "updatedArticle": {
@@ -132,7 +128,6 @@
   },
   "DELETE /api/comments/:comment_id": {
     "description": "deletes a comment by the given comment_id",
-    "params": ["comment_id"],
     "exampleResponse": {}
   }
 }

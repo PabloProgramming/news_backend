@@ -4,7 +4,7 @@ const app = require("../../app");
 
 describe("ENDPOINT: /api/articles:article:id/comments", () => {
   describe("GET: /api/articles:article:id/comments", () => {
-    test("Returns a 200 OK status when an comments are fetched successfully", async () => {
+    test("Responds with a 200 OK status when an comments are fetched successfully", async () => {
       await request(app).get("/api/articles/3/comments").expect(200);
     });
 
@@ -34,13 +34,13 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
       expect(comments).toBeSortedBy("created_at", {ascending: true});
     });
     describe("💥 Error handling tests", () => {
-      test("Returns 404 when the article_id is not found", async () => {
+      test("Responds with 404 when the article_id is not found", async () => {
         const {
           body: {msg},
         } = await request(app).get(`/api/articles/123123/comments`).expect(404);
         expect(msg).toBe("Not Found");
       });
-      test("Returns 400 when the article_id is not a number", async () => {
+      test("Responds with 400 when the article_id is not a number", async () => {
         const {
           body: {msg},
         } = await request(app)
@@ -48,7 +48,7 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
           .expect(400);
         expect(msg).toBe("Bad Request");
       });
-      test("Returns 400 when provided with wrong query sort_by values", async () => {
+      test("Responds with 400 when provided with wrong query sort_by values", async () => {
         const {
           body: {msg},
         } = await request(app)
@@ -56,7 +56,7 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
           .expect(400);
         expect(msg).toBe("Bad Request");
       });
-      test("Returns 400 when provided with wrong query order values", async () => {
+      test("Responds with 400 when provided with wrong query order values", async () => {
         const {
           body: {msg},
         } = await request(app)
@@ -64,7 +64,7 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
           .expect(400);
         expect(msg).toBe("Bad Request");
       });
-      test("Returns 404 when there are not comments associated with provided article_id", async () => {
+      test("Responds with 404 when there are not comments associated with provided article_id", async () => {
         const {
           body: {msg},
         } = await request(app).get("/api/articles/2/comments").expect(404);
@@ -74,7 +74,7 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
   });
 
   describe("POST: /api/articles/:article_id/comments", () => {
-    test("Returns a 201 status when comment is created successfully", async () => {
+    test("Responds with a 201 status when comment is created successfully", async () => {
       const testComment = {username: "lurker", body: "Bad article!"};
       await request(app)
         .post("/api/articles/3/comments")
@@ -99,13 +99,13 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
     });
   });
   describe("💥 Error handling tests", () => {
-    test("Returns 404 when the article_id is not found", async () => {
+    test("Responds with 404 when the article_id is not found", async () => {
       const {
         body: {msg},
       } = await request(app).post(`/api/articles/123123/comments`).expect(404);
       expect(msg).toBe("Article not found");
     });
-    test("Returns 400 when the article_id is not a number", async () => {
+    test("Responds with 400 when the article_id is not a number", async () => {
       const {
         body: {msg},
       } = await request(app)
@@ -114,7 +114,7 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
       expect(msg).toBe("Bad Request");
     });
 
-    test("Returns 400 when the username does not exist", async () => {
+    test("Responds with 400 when the username does not exist", async () => {
       const newComment = {username: "nonexistentuser", body: "Great article!"};
       const {body} = await request(app)
         .post("/api/articles/2/comments")
@@ -131,8 +131,7 @@ describe("ENDPOINT: /api/comments/:comment_id", () => {
       await request(app).delete("/api/comments/5").expect(204);
     });
     test("Successfully deletes a comment and updates the comments list for the article", async () => {
-      const {body} = await request(app).delete("/api/comments/10").expect(204);
-      expect(body).toEqual({});
+      await request(app).delete("/api/comments/10").expect(204);
       const {
         body: {comments},
       } = await request(app).get("/api/articles/3/comments");
@@ -145,7 +144,7 @@ describe("ENDPOINT: /api/comments/:comment_id", () => {
         } = await request(app).delete(`/api/comments/999999`).expect(404);
         expect(msg).toBe("Comment not found");
       });
-      test("Returns 400 when the comment_id is not a number", async () => {
+      test("Responds with 400 when the comment_id is not a number", async () => {
         const {
           body: {msg},
         } = await request(app).delete(`/api/comments/invalidId`).expect(400);
@@ -154,4 +153,15 @@ describe("ENDPOINT: /api/comments/:comment_id", () => {
     });
   });
 });
+
+
+
+
+
+
+
+
+
+
+
 

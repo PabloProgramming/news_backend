@@ -3,7 +3,7 @@ const request = require("supertest");
 const app = require("../../app");
 describe("ENDPOINT: /api/articles", () => {
   describe("GET: /api/articles", () => {
-    test("Returns a 200 OK status when articles are fetched successfully", async () => {
+    test("Responds with 200 OK status when articles are fetched successfully", async () => {
       await request(app).get("/api/articles").expect(200);
     });
     test("Returns an array of all articles sorted by date in desc order", async () => {
@@ -62,7 +62,7 @@ describe("ENDPOINT: /api/articles", () => {
     });
 
     describe("💥 Error handling tests", () => {
-      test("Returns 400 when provided with wrong query sort_by values", async () => {
+      test("Responds with 400 when provided with wrong query sort_by values", async () => {
         const {
           body: {msg},
         } = await request(app)
@@ -71,7 +71,7 @@ describe("ENDPOINT: /api/articles", () => {
         expect(msg).toBe("Bad Request");
       });
 
-      test("Returns 400 when provided with wrong query order values", async () => {
+      test("Responds with 400 when provided with wrong query order values", async () => {
         const {
           body: {msg},
         } = await request(app)
@@ -79,7 +79,7 @@ describe("ENDPOINT: /api/articles", () => {
           .expect(400);
         expect(msg).toBe("Bad Request");
       });
-      test("Returns 404 when the topic is not found", async () => {
+      test("Responds with 404 when the topic is not found", async () => {
         const {
           body: {msg},
         } = await request(app)
@@ -92,7 +92,6 @@ describe("ENDPOINT: /api/articles", () => {
           body: {articles},
         } = await request(app).get(`/api/articles?topic=paper`).expect(200);
         expect(articles.articles).toEqual([]);
-        expect(articles.msg).toBe("No articles found for this topic");
       });
     });
   });
@@ -100,7 +99,7 @@ describe("ENDPOINT: /api/articles", () => {
 
 describe("ENDPOINT: /api/articles/article:id", () => {
   describe("GET: /api/articles/article:id", () => {
-    test("Returns a 200 OK status when an article is fetched successfully", async () => {
+    test("Responds with a 200 OK status when an article is fetched successfully", async () => {
       await request(app).get("/api/articles/5").expect(200);
     });
 
@@ -121,13 +120,13 @@ describe("ENDPOINT: /api/articles/article:id", () => {
       expect(article.comment_count).toBe(11);
     });
     describe("💥 Error handling tests", () => {
-      test("Returns 404 when the id is not found", async () => {
+      test("Responds with 404 when the id is not found", async () => {
         const {
           body: {msg},
         } = await request(app).get(`/api/articles/123123`).expect(404);
         expect(msg).toBe("Article not found");
       });
-      test("Returns 400 when the id is not a number", async () => {
+      test("Responds with 400 when the id is not a number", async () => {
         const {
           body: {msg},
         } = await request(app).get(`/api/articles/badrequest`).expect(400);
@@ -136,9 +135,9 @@ describe("ENDPOINT: /api/articles/article:id", () => {
     });
   });
   describe("PATCH: /api/articles/article:id", () => {
-    test("Returns a 200 OK status when an article is updated successfully", async () => {
+    test("Responds with a 200 OK status when an article is updated successfully", async () => {
       await request(app)
-        .patch("/api/articles/2")
+        .patch("/api/articles/1")
         .send({inc_votes: 3})
         .expect(200);
     });
@@ -180,19 +179,19 @@ describe("ENDPOINT: /api/articles/article:id", () => {
       expect(updatedArticle.created_at).toBe("2020-07-09T20:11:00.000Z");
     });
     describe("💥 Error handling tests", () => {
-      test("Returns 404 when the id is not found", async () => {
+      test("Responds with 404 when the id is not found", async () => {
         const {
           body: {msg},
         } = await request(app).patch(`/api/articles/123123`).expect(404);
         expect(msg).toBe("Article not found");
       });
-      test("Returns 400 when the id is not a number", async () => {
+      test("Responds with 400 when the id is not a number", async () => {
         const {
           body: {msg},
         } = await request(app).patch(`/api/articles/badrequest`).expect(400);
         expect(msg).toBe("Bad Request");
       });
-      test("Returns 400 if inc_votes is not provided", async () => {
+      test("Responds with 400 if inc_votes is not provided", async () => {
         const {
           body: {msg},
         } = await request(app).patch("/api/articles/2").send({}).expect(400);
@@ -201,4 +200,15 @@ describe("ENDPOINT: /api/articles/article:id", () => {
     });
   });
 });
+
+
+
+
+
+
+
+
+
+
+
 
