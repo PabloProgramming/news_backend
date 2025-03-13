@@ -140,6 +140,22 @@
   "DELETE /api/comments/:comment_id": {
     "description": "deletes a comment by the given comment_id",
     "exampleResponse": {}
+  },
+  "PATCH /api/comments/:comment_id": {
+    "description": "updates the votes on a comment given the comment's comment_id",
+    "body": {
+      "inc_votes": "newVote"
+    },
+    "exampleResponse": {
+      "updatedComment": {
+        "comment_id": 2,
+        "votes": 1,
+        "body": "Ambidextrous marsupial",
+        "created_at": "2020-09-20T00:10:00.000Z",
+        "author": "icellusedkars",
+        "article_id": 3
+      }
+    }
   }
 }
 

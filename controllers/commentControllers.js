@@ -2,6 +2,8 @@ const {
   selectCommentsByArticleId,
   insertCommentByArticleId,
   removeCommentById,
+  selectCommentById,
+  updateCommentVotesById
 } = require("../models/commentModels");
 
 const getCommentsByArticleId = async (req, res, next) => {
@@ -44,9 +46,32 @@ const deleteCommentById = async (req, res, next) => {
   }
 };
 
+const getCommentById = async (req, res, next) => {
+  try {
+    const { comment_id } = req.params;
+    const comment = await selectCommentById(comment_id);
+    res.status(200).send({ comment })
+  } catch (err) {
+    next(err)
+  }
+};
+
+const patchCommentVotesById = async (req, res, next) => {
+  try {
+    const { comment_id } = req.params;
+    const { inc_votes } = req.body;
+    const updatedComment = await updateCommentVotesById(comment_id, inc_votes);
+    res.status(200).send({ updatedComment })
+  } catch (err) {
+    next(err)
+  }
+};
+
 module.exports = {
   getCommentsByArticleId,
   postCommentByArticleId,
   deleteCommentById,
+  patchCommentVotesById,
+  getCommentById,
 };
 
