@@ -35,6 +35,17 @@
       }
     ]
   },
+  "GET /api/users/:username": {
+    "description": "retrieves a user by their username",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "icellusedkars",
+        "name": "sam",
+        "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+      }
+    }
+  },
   "GET /api/articles": {
     "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
