@@ -18,5 +18,54 @@ describe("GET: /api/topics", () => {
     });
   });
 });
+describe("POST: /api/topics", () => {
+  test("Responds with a 201 status when topic is created successfully", async () => {
+    const testTopic = {slug: "topic name", description: "test description"};
+    await request(app).post("/api/topics").send(testTopic).expect(201);
+  });
+  test("Returns newly created topic", async () => {
+    const testNewTopic = {
+      slug: "coding",
+      description: "Learn more about JavaScript",
+      img_url: "https://blog.pango.education/hubfs/Coding%20Blog%20Image.jpg",
+    };
+    const {
+      body: {newTopic},
+    } = await request(app).post("/api/topics").send(testNewTopic).expect(201);
+    expect(newTopic.slug).toBe("coding");
+    expect(newTopic.description).toBe("Learn more about JavaScript");
+    expect(newTopic.img_url).toBe(
+      "https://blog.pango.education/hubfs/Coding%20Blog%20Image.jpg"
+    );
+  });
+  describe("", () => {
+    test("Responds with 400 bad request if required fields are missing", async () => {
+      const incompleteTopic = {
+        slug: "coding",
+      };
+      const {
+        body: {msg},
+      } = await request(app)
+        .post("/api/topics")
+        .send(incompleteTopic)
+        .expect(400);
+      expect(msg).toBe("Bad Request: Missing required fields");
+    });
+    test("Returns 400 for invalid data types", async () => {
+      const invalidTopic = {
+        slug: 123,
+        description: "Learn more about JavaScript",
+        img_url: "https://blog.pango.education/hubfs/Coding%20Blog%20Image.jpg",
+      };
+      const {
+        body: {msg},
+      } = await request(app).post("/api/topics").send(invalidTopic).expect(400);
+      expect(msg).toBe("Bad Request: Invalid data type");
+    });
+  });
+});
+
+
+
 
 

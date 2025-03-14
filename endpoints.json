@@ -9,6 +9,22 @@
       "topics": [{"slug": "football", "description": "Footie!"}]
     }
   },
+  "POST /api/topics": {
+    "description": "Creates a new topic",
+    "queries": [],
+    "exampleRequest": {
+      "slug": "coding",
+      "description": "Learn more about JavaScript",
+      "img_url": "https://blog.pango.education/hubfs/Coding%20Blog%20Image.jpg"
+    },
+    "exampleResponse": {
+      "newTopic": {
+        "slug": "coding",
+        "description": "Learn more about JavaScript",
+        "img_url": "https://blog.pango.education/hubfs/Coding%20Blog%20Image.jpg"
+      }
+    }
+  },
   "GET /api/users": {
     "description": "retrieves all users",
     "queries": [],
