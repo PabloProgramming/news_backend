@@ -169,10 +169,17 @@ const insertArticle = async (
   return rows[0];
 };
 
+const removeArticleById = async (article_id) => {
+  await selectArticleById(article_id);
+  console.log("article found");
+  const queryStr = `DELETE FROM articles WHERE article_id = $1`;
+  await db.query(queryStr, [article_id]);
+};
 module.exports = {
   selectArticleById,
   selectAllArticles,
   updateArticleById,
   insertArticle,
+  removeArticleById,
 };
 

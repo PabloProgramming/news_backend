@@ -365,7 +365,24 @@ describe("ENDPOINT: /api/articles/article:id", () => {
       });
     });
   });
+  describe("DELETE: /api/articles:article_id", () => {
+    test("Responds with 204 status when a article is deleted successfully", async () => {
+      await request(app).delete("/api/articles/7").expect(204);
+    });
+    describe("💥 Error handling tests", () => {
+      test("Responds with 404 when the article_id is not found", async () => {
+        const {
+          body: {msg},
+        } = await request(app).delete(`/api/articles/999999`).expect(404);
+        expect(msg).toBe("Article not found");
+      });
+      test("Responds with 400 when the article_id is not a number", async () => {
+        const {
+          body: {msg},
+        } = await request(app).delete(`/api/articles/invalidId`).expect(400);
+        expect(msg).toBe("Bad Request");
+      });
+    });
+  });
 });
-
-
 

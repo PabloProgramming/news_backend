@@ -3,12 +3,19 @@ const {
   selectAllArticles,
   updateArticleById,
   insertArticle,
+  removeArticleById,
 } = require("../models/articleModels");
 
 const getAllArticles = async (req, res, next) => {
   try {
     const {sort_by, order, topic, limit, p} = req.query;
-    const {articles, total_count, pages, pageNumber} = await selectAllArticles(sort_by, order, topic,limit,p);
+    const {articles, total_count, pages, pageNumber} = await selectAllArticles(
+      sort_by,
+      order,
+      topic,
+      limit,
+      p
+    );
     res.status(200).send({articles, total_count, pages, pageNumber});
   } catch (err) {
     next(err);
@@ -52,10 +59,21 @@ const postArticle = async (req, res, next) => {
   }
 };
 
+const deleteArticleById = async (req, res, next) => {
+  try {
+    const { article_id } = req.params;
+    await removeArticleById(article_id);
+    res.status(204).send()
+  } catch (err) {
+    next(err)
+  }
+};
+
 module.exports = {
   getArticleById,
   getAllArticles,
   patchArticleById,
   postArticle,
+  deleteArticleById,
 };
 
