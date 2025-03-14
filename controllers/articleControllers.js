@@ -2,6 +2,7 @@ const {
   selectArticleById,
   selectAllArticles,
   updateArticleById,
+  insertArticle,
 } = require("../models/articleModels");
 
 const getAllArticles = async (req, res, next) => {
@@ -35,5 +36,26 @@ const patchArticleById = async (req, res, next) => {
   }
 };
 
-module.exports = {getArticleById, getAllArticles, patchArticleById};
+const postArticle = async (req, res, next) => {
+  try {
+    const {author, title, body, topic, article_img_url} = req.body;
+    const newArticle = await insertArticle(
+      author,
+      title,
+      body,
+      topic,
+      article_img_url
+    );
+    res.status(201).send({newArticle});
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {
+  getArticleById,
+  getAllArticles,
+  patchArticleById,
+  postArticle,
+};
 

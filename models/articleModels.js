@@ -1,5 +1,7 @@
+const {query} = require("express");
 const db = require("../db/connection");
 const {selectTopicBySlug} = require("./topicModels");
+const {selectUserByUsername} = require("./userModels");
 
 const allowedSortingQueries = [
   "article_id",
@@ -97,5 +99,51 @@ const updateArticleById = async (article_id, inc_votes) => {
   return updatedArticle;
 };
 
-module.exports = {selectArticleById, selectAllArticles, updateArticleById};
+const insertArticle = async (
+  author,
+  title,
+  body,
+  topic,
+  article_img_url = "https://images.pexels.com/photos/261949/pexels-photo-261949.jpeg?w=700&h=700"
+) => {
+  if (!author || !title || !topic || !body) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request: Missing required field",
+    });
+  }
+
+  if (
+    typeof author !== "string" ||
+    typeof title !== "string" ||
+    typeof topic !== "string" ||
+    typeof body !== "string" ||
+    typeof article_img_url !== "string"
+  ) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request: Invalid data type",
+    });
+  }
+
+  await selectUserByUsername(author);
+  await selectTopicBySlug(topic);
+
+  const queryStr = `INSERT INTO articles (author, title, body, topic, article_img_url)
+                    VALUES ($1, $2, $3, $4, $5)
+                    RETURNING *, 
+                    (SELECT CAST(COUNT(c.comment_id) AS integer) 
+                    FROM comments c 
+                    WHERE c.article_id = articles.article_id) AS comment_count;`;
+  const bodyValues = [author, title, body, topic, article_img_url];
+  const {rows} = await db.query(queryStr, bodyValues);
+  return rows[0];
+};
+
+module.exports = {
+  selectArticleById,
+  selectAllArticles,
+  updateArticleById,
+  insertArticle,
+};
 

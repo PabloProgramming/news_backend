@@ -63,6 +63,29 @@
       ]
     }
   },
+  "POST /api/articles": {
+    "description": "creates a new article and returns the newly created article object",
+    "body": {
+      "author": "string",
+      "title": "string",
+      "body": "string",
+      "topic": "string",
+      "article_img_url": "string"
+    },
+    "exampleResponse": {
+      "newArticle": {
+        "article_id": 1,
+        "author": "rogersop",
+        "title": "Living in the shadow of a great man",
+        "body": "I find this existence challenging",
+        "topic": "mitch",
+        "article_img_url": "https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg?w=700&h=700",
+        "created_at": "2025-03-14T11:10:24.868Z",
+        "votes": 0,
+        "comment_count": 0
+      }
+    }
+  },
   "GET /api/articles/:article_id": {
     "description": "serves a single article object based on the provided article_id",
     "queries": [],
