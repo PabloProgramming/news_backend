@@ -1,4 +1,3 @@
-const {query} = require("express");
 const db = require("../db/connection");
 const {selectTopicBySlug} = require("./topicModels");
 const {selectUserByUsername} = require("./userModels");
@@ -16,7 +15,9 @@ const allowedOrderQueries = ["desc", "asc"];
 const selectAllArticles = async (
   sort_by = "created_at",
   order = "desc",
-  topic
+  topic,
+  limit = 10,
+  p = 1
 ) => {
   if (!allowedSortingQueries.includes(sort_by)) {
     return Promise.reject({
@@ -31,6 +32,32 @@ const selectAllArticles = async (
       msg: "Bad Request",
     });
   }
+  if (limit < 0) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request: Invalid limit",
+    });
+  }
+
+  if (p < 1) {
+    return Promise.reject({
+      status: 400,
+      msg: "Bad Request: Invalid page",
+    });
+  }
+  let countArticlesQueryStr = `SELECT COUNT(*) FROM articles`;
+  let countQueryValues = [];
+  if (topic) {
+    await selectTopicBySlug(topic);
+    countArticlesQueryStr += ` WHERE topic = $1`;
+    countQueryValues.push(topic);
+  }
+
+  const countResult = await db.query(countArticlesQueryStr, countQueryValues);
+  const total_count = parseInt(countResult.rows[0].count, 10);
+  const pages = Math.ceil(total_count / limit);
+  const pageNumber = parseInt(p, 10);
+  const offset = parseInt(pageNumber - 1) * limit;
 
   let queryStr = `SELECT a.author, a.title, a.article_id, a.topic, a.created_at,a.votes, a.article_img_url,
   CAST(COUNT(c.comment_id) AS integer) AS comment_count
@@ -55,12 +82,14 @@ const selectAllArticles = async (
     queryStr += ` ${order}`;
   }
 
+  queryStr += ` LIMIT ${limit} OFFSET ${offset}`;
+
   const {rows} = await db.query(queryStr, queryValues);
   const articles = rows;
   if (articles.length === 0) {
-    return {articles: [], msg: "No articles found for this topic"};
+    return {articles, total_count};
   }
-  return articles;
+  return {articles, total_count, pages, pageNumber};
 };
 
 const selectArticleById = async (article_id) => {
