@@ -55,10 +55,35 @@ describe("ENDPOINT: /api/articles", () => {
     });
     test("Returns an array of all articles belonging to a topic in desc order", async () => {
       const {
-        body: {articles},
+        body: {articles, total_count, pages},
       } = await request(app).get("/api/articles?topic=mitch").expect(200);
-      expect(articles.length).toBe(12);
+      expect(articles.length).toBe(10);
+      expect(total_count).toBe(12);
       expect(articles).toBeSortedBy("created_at", {descending: true});
+    });
+    test("Returns an array of articles paginated, with a default query limit of 10 articles by page", async () => {
+      const {
+        body: {articles, total_count, pages},
+      } = await request(app).get("/api/articles").expect(200);
+      expect(articles.length).toBe(10);
+      expect(total_count).toBe(13);
+      expect(pages).toBe(2);
+    });
+    test("Returns an array of articles paginated, when provided a query limit", async () => {
+      const {
+        body: {articles, total_count, pages},
+      } = await request(app).get("/api/articles?limit=5").expect(200);
+      expect(articles.length).toBe(5);
+      expect(total_count).toBe(13);
+      expect(pages).toBe(3);
+    });
+    test("Returns an array of articles paginated, when they are filteres by topic and provided a query limit", async () => {
+      const {
+        body: {articles, total_count, pages},
+      } = await request(app).get("/api/articles?topic=mitch&limit=2").expect(200);
+      expect(articles.length).toBe(2);
+      expect(total_count).toBe(12);
+      expect(pages).toBe(6);
     });
 
     describe("💥 Error handling tests", () => {
@@ -87,11 +112,12 @@ describe("ENDPOINT: /api/articles", () => {
           .expect(404);
         expect(msg).toBe("Topic not found");
       });
-      test("Returns a message when the topic exists but has no articles", async () => {
+      test("Returns an empty array when the topic exists but has no articles", async () => {
         const {
-          body: {articles},
+          body: {articles, total_count},
         } = await request(app).get(`/api/articles?topic=paper`).expect(200);
-        expect(articles.articles).toEqual([]);
+        expect(articles).toEqual([]);
+        expect(total_count).toBe(0);
       });
     });
   });

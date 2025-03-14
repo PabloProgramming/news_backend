@@ -7,9 +7,9 @@ const {
 
 const getAllArticles = async (req, res, next) => {
   try {
-    const {sort_by, order, topic} = req.query;
-    const articles = await selectAllArticles(sort_by, order, topic);
-    res.status(200).send({articles});
+    const {sort_by, order, topic, limit, p} = req.query;
+    const {articles, total_count, pages} = await selectAllArticles(sort_by, order, topic,limit,p);
+    res.status(200).send({articles, total_count, pages});
   } catch (err) {
     next(err);
   }
