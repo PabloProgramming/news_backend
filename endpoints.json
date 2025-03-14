@@ -203,6 +203,10 @@
         "created_at": "2020-10-16T05:03:00.000Z"
       }
     }
+  },  
+  "DELETE /api/articles/:article_id": {
+    "description": "deletes a article by the given article_id",
+    "exampleResponse": {}
   },
   "DELETE /api/comments/:comment_id": {
     "description": "deletes a comment by the given comment_id",

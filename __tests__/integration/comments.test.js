@@ -126,7 +126,7 @@ describe("ENDPOINT: /api/articles:article:id/comments", () => {
 });
 
 describe("ENDPOINT: /api/comments/:comment_id", () => {
-  describe("DELETE: /api/articles:article:id/comments", () => {
+  describe("DELETE: /api/comments:comment_id", () => {
     test("Responds with 204 status when a comment is deleted successfully", async () => {
       await request(app).delete("/api/comments/5").expect(204);
     });
