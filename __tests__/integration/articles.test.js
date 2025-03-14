@@ -133,7 +133,83 @@ describe("ENDPOINT: /api/articles", () => {
       expect(typeof newArticle.created_at).toBe("string");
       expect(newArticle.votes).toBe(0);
       expect(newArticle.comment_count).toBe(0);
-      
+    });
+    test("Returns newly created object article with default article_img_url", async () => {
+      const testArticle = {
+        author: "rogersop",
+        title: "Living in the shadow of a great man",
+        body: "I find this existence challenging",
+        topic: "mitch",
+      };
+      const {
+        body: {newArticle},
+      } = await request(app)
+        .post("/api/articles")
+        .send(testArticle)
+        .expect(201);
+      expect(newArticle.article_img_url).toBe(
+        "https://images.pexels.com/photos/261949/pexels-photo-261949.jpeg?w=700&h=700"
+      );
+    });
+  });
+  describe("", () => {
+    test("Responds with 400 bad request if required fields are missing", async () => {
+      const incompleteArticle = {
+        title: "Test Title",
+        body: "Test Body",
+      };
+      const {
+        body: {msg},
+      } = await request(app)
+        .post("/api/articles")
+        .send(incompleteArticle)
+        .expect(400);
+      expect(msg).toBe("Bad Request: Missing required field");
+    });
+    test("Returns 400 for invalid data types", async () => {
+      const invalidArticle = {
+        author: 123,
+        title: "Valid Title",
+        body: "Valid Body",
+        topic: "Valid Topic",
+      };
+      const {
+        body: {msg},
+      } = await request(app)
+        .post("/api/articles")
+        .send(invalidArticle)
+        .expect(400);
+      expect(msg).toBe("Bad Request: Invalid data type");
+    });
+    test("Returns 404 if author does not exist", async () => {
+      const invalidArticle = {
+        author: "doesnotexist",
+        title: "Valid Title",
+        body: "Valid Body",
+        topic: "mitch",
+      };
+      const {
+        body: {msg},
+      } = await request(app)
+        .post("/api/articles")
+        .send(invalidArticle)
+        .expect(404);
+      expect(msg).toBe("User not found");
+    });
+    test("Returns 404 if topic does not exist", async () => {
+      const invalidArticle = {
+        author: "rogersop",
+        title: "Valid Title",
+        body: "Valid Body",
+        topic: "doesnotexist",
+      };
+      const {
+        body: {msg},
+      } = await request(app)
+        .post("/api/articles")
+        .send(invalidArticle)
+        .expect(404);
+      expect(msg).toBe("Topic not found");
     });
   });
 });
@@ -241,20 +317,4 @@ describe("ENDPOINT: /api/articles/article:id", () => {
     });
   });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

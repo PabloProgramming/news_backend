@@ -13,12 +13,12 @@ const {
 
 const articlesRouter = express.Router();
 
-articlesRouter.route("/").get(getAllArticles).post(postArticle)
+articlesRouter.route("/").get(getAllArticles).post(postArticle);
 
 articlesRouter
   .route("/:article_id")
   .get(getArticleById)
-  .patch(patchArticleById)
+  .patch(patchArticleById);
 
 articlesRouter
   .route("/:article_id/comments")
@@ -26,5 +26,4 @@ articlesRouter
   .post(postCommentByArticleId);
 
 module.exports = articlesRouter;
-
 
