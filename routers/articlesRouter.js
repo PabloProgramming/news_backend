@@ -3,22 +3,22 @@ const {
   getArticleById,
   getAllArticles,
   patchArticleById,
+  postArticle,
 } = require("../controllers/articleControllers");
 
 const {
   getCommentsByArticleId,
   postCommentByArticleId,
-  deleteCommentById,
 } = require("../controllers/commentControllers");
 
 const articlesRouter = express.Router();
 
-articlesRouter.route("/").get(getAllArticles);
+articlesRouter.route("/").get(getAllArticles).post(postArticle)
 
 articlesRouter
   .route("/:article_id")
   .get(getArticleById)
-  .patch(patchArticleById);
+  .patch(patchArticleById)
 
 articlesRouter
   .route("/:article_id/comments")
@@ -26,3 +26,5 @@ articlesRouter
   .post(postCommentByArticleId);
 
 module.exports = articlesRouter;
+
+
