@@ -4,6 +4,7 @@ const topicsRouter = require("./routers/topicsRouter");
 const usersRouter = require("./routers/usersRouter");
 const articlesRouter = require("./routers/articlesRouter");
 const commentsRouter = require("./routers/commentsRouter")
+const cors = require("cors")
 
 const {
   handleServerError,
@@ -15,6 +16,7 @@ const {
 const app = express();
 
 app.use(express.json());
+app.use(cors())
 
 app.use("/api", apiRouter);
 app.use("/api/topics", topicsRouter);
