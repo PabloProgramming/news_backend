@@ -114,6 +114,28 @@ const selectArticleById = async (article_id) => {
   return article;
 };
 
+const selectArticleByTitle = async (title) => {
+  const {rows} = await db.query(
+    `SELECT a.author, a.title, a.article_id, a.topic, a.created_at, a.votes, a.article_img_url, a.body,
+    CAST(COUNT(c.comment_id) AS integer) AS comment_count
+     FROM articles a
+     LEFT JOIN comments c ON a.article_id = c.article_id
+     WHERE LOWER(a.title) = LOWER($1)
+    GROUP BY a.article_id`,
+    [title]
+  );
+
+  const article = rows[0];
+  if (!article) {
+    return Promise.reject({
+      status: 404,
+      msg: "Article not found",
+    });
+  }
+
+  return article;
+};
+
 const updateArticleById = async (article_id, inc_votes) => {
   await selectArticleById(article_id);
   if (!inc_votes) {
@@ -181,5 +203,6 @@ module.exports = {
   updateArticleById,
   insertArticle,
   removeArticleById,
+  selectArticleByTitle,
 };
 

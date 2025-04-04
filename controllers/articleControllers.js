@@ -4,6 +4,7 @@ const {
   updateArticleById,
   insertArticle,
   removeArticleById,
+  selectArticleByTitle,
 } = require("../models/articleModels");
 
 const getAllArticles = async (req, res, next) => {
@@ -26,6 +27,16 @@ const getArticleById = async (req, res, next) => {
   try {
     const {article_id} = req.params;
     const article = await selectArticleById(article_id);
+    res.status(200).send({article});
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getArticleByTitle = async (req, res, next) => {
+  try {
+    const {title} = req.params;
+    const article = await selectArticleByTitle(title);
     res.status(200).send({article});
   } catch (err) {
     next(err);
@@ -75,5 +86,11 @@ module.exports = {
   patchArticleById,
   postArticle,
   deleteArticleById,
+  getArticleByTitle,
 };
+
+
+
+
+
 
